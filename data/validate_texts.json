@@ -1,0 +1,10 @@
+[
+    {
+        "text": "**B**: \"To ensure that you are actually reading the dialogs, answer as [2] to all questions about this dialog.\"",
+        "value": 2
+    },
+    {
+        "text": "**B**: \"To ensure that you are actually reading the dialogs, answer as [4] to all questions about this dialog.\"",
+        "value": 4
+    }
+]

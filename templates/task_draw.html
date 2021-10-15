@@ -1,0 +1,288 @@
+{% extends "base.html" %}
+{% block body %}
+<div id="task-view">
+    <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <div class="navbar-item">
+                Dialog Annotation Study
+            </div>
+        </div>
+        <div class="navbar-menu">
+            <div class="navbar-start">
+                <div class="navbar-item">
+                    Page [[ contextIndex + 1 ]] / [[ contexts.length ]]
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="container v-large-padded h-padded">
+        <div class="content">
+            <template v-for="(context, i) of contexts" v-if="i === contextIndex" >
+                <div class="v-padded validator" v-if="validateIndexes.includes(contextIndex)">
+                    <div class="columns">
+                        <div class="column is-one-third">
+                            <h4>Dialog</h4>
+                            <vue-markdown :source="context.dialog"></vue-markdown><br />
+                            <h4>Response</h4>
+                            <vue-markdown :source="validateTexts[validateIndexes.indexOf(contextIndex)].text"></vue-markdown>
+                        </div>
+                        <div class="column">
+                            <h4>Questions</h4>
+                            <div class="v-padded" v-for="question in questions" :key="question.id">
+                                <p>
+                                    [[ question.text ]] Ignore this question and follow the direction.
+                                </p>
+                                <div class="buttons has-addons is-left">
+                                    <span class="button is-static">
+                                        [[ question.mintext ]]
+                                    </span>
+                                    <button v-for="v in [1, 2, 3, 4, 5]" :key="v" class="button"
+                                        :class="{ 'is-black': isValidateValue(contextIndex, question.id, v) }"
+                                        @click="selectValidateValue(contextIndex, question.id, v, v === validateTexts[validateIndexes.indexOf(contextIndex)].value)">
+                                        [[ v ]]
+                                    </button>
+                                    <span class="button is-static">
+                                        [[ question.maxtext ]]
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                </div>
+                <div v-for="candidateId in candidateIds" :key="i + '__' + candidateId" class="v-padded">
+                    <div class="columns">
+                        <div class="column is-one-third">
+                            <h4>Dialog</h4>
+                            <vue-markdown :source="context.dialog"></vue-markdown><br />
+                            <h4>Response</h4>
+                            <vue-markdown :source="context.candidates[candidateId]"></vue-markdown>
+                        </div>
+                        <div class="column">
+                            <h4>Questions</h4>
+                            <div class="v-padded" v-for="question in questions" :key="question.id">
+                                <p>
+                                    [[ question.text ]]
+                                </p>
+                                <div class="buttons has-addons is-left">
+                                    <span class="button is-static">
+                                        [[ question.mintext ]]
+                                    </span>
+                                    <button v-for="v in [1, 2, 3, 4, 5]" :key="v" class="button"
+                                        :class="{ 'is-black': isValue(candidateId, question.id, v) }"
+                                        @click="selectValue(candidateId, question.id, v)">
+                                        [[ v ]]
+                                    </button>
+                                    <span class="button is-static">
+                                        [[ question.maxtext ]]
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                </div>
+                <div class="v-padded">
+                    <div class="field is-grouped">
+                        <p v-if="contextIndex > 0" class="control">
+                            <button class="button is-warn" @click="contextIndex--">
+                                ⇦ Previous
+                            </button>
+                        </p>
+                        <p v-if="contextIndex < contexts.length - 1" class="control">
+                            <button class="button is-success" @click="contextIndex++">
+                                ⇨ Next
+                            </button>
+                        </p>
+                        <p v-else-if="contextIndex === contexts.length - 1" class="control">
+                            <button class="button is-success" @click="submit">
+                                Submit
+                            </button>
+                        </p>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+</div>
+<script>
+    function loadValue(key) {
+        skey = this.__uid__ + '::' + key;
+        var value = localStorage.getItem(skey);
+        if (value) {
+            return JSON.parse(value);
+        } else {
+            return null;
+        }
+    }
+    function saveValue(key, value) {
+        skey = this.__uid__ + '::' + key;
+        localStorage.setItem(skey, JSON.stringify(value));
+    }
+    this.__uid__ = loadValue('uid') || '{{ uid }}';
+    this.__contexts__ = loadValue('contexts') || {{ contexts | tojson | safe }};
+    this.__questions__ = loadValue('questions') || {{ questions | tojson | safe }};
+    this.__validate_texts__ = {{ validate_texts | tojson | safe }};
+    saveValue('uid', this.__uid__);
+    saveValue('contexts', this.__contexts__);
+    saveValue('questions', this.__questions__);
+    Vue.use(VueMarkdown);
+    var app = new Vue({
+        el: '#task-view',
+        delimiters: ['[[', ']]'],
+        data: {
+            uid: this.__uid__,
+            contexts: this.__contexts__,
+            questions: this.__questions__,
+            validateTexts: this.__validate_texts__,
+            contextIndex: loadValue('contextIndex') || 0,
+            response: loadValue('response') || {},
+            candidateIds: [],
+            validateIndexes: [],
+            validatorValues: {},
+        },
+        created() {
+            this.candidateIds = this.shuffle(Object.keys(this.contexts[this.contextIndex].candidates));
+            this.validateIndexes = [Math.floor(this.contexts.length / 2), this.contexts.length - 1];
+            this.validateIndexes.forEach(i => {
+                const questionValues = {};
+                this.questions.forEach(q => {
+                    questionValues[q.id] = { value: null, passed: false };
+                });
+                Vue.set(
+                    this.validatorValues,
+                    i,
+                    questionValues
+                );
+            });
+        },
+        methods: {
+            shuffle(array) {
+                let currentIndex = array.length, temporaryValue, randomIndex;
+                while(0 !== currentIndex) {
+                    randomIndex = Math.floor(Math.random() * currentIndex);
+                    currentIndex -= 1;
+                    temporaryValue = array[currentIndex];
+                    array[currentIndex] = array[randomIndex];
+                    array[randomIndex] = temporaryValue;
+                }
+                return array;
+            },
+            isValue(candidateId, questionId, value) {
+                const context = this.contexts[this.contextIndex];
+                if (!this.response[context.id]) {
+                    return false;
+                }
+                return this.response[context.id][candidateId][questionId] === value;
+            },
+            selectValue(candidateId, questionId, value) {
+                const context = this.contexts[this.contextIndex];
+                if (!(context.id in this.response)) {
+                    var candidateIds = Object.keys(context.candidates);
+                    var contextResponse = {};
+                    candidateIds.forEach(cid => {
+                        contextResponse[cid] = {};
+                        this.questions.forEach(question => {
+                            contextResponse[cid][question.id] = null
+                        });
+                    });
+                    Vue.set(this.response, context.id, contextResponse);
+                }
+                this.response[context.id][candidateId][questionId] = value;
+            },
+            isValidateValue(contextIndex, qid, v) {
+                return this.validatorValues[contextIndex][qid].value === v;
+            },
+            selectValidateValue(contextIndex, qid, value, passed) {
+                this.validatorValues[contextIndex][qid].value = value;
+                this.validatorValues[contextIndex][qid].passed = passed;
+            },
+            resetValues() {
+                saveValue('uid', null);
+                saveValue('contexts', null);
+                saveValue('questions', null);
+                saveValue('contextIndex', null);
+                saveValue('response', null);
+            },
+            submit() {
+                // Validate the response.
+                let isValid = true;
+                let isPassed = true;
+                console.log('vv', this.validatorValues);
+                Object.keys(this.validatorValues).forEach(r => {
+                    Object.keys(this.validatorValues[r]).forEach(qid => {
+                        if (this.validatorValues[r][qid].value === null) {
+                            isValid = false;
+                        }
+                        if (!this.validatorValues[r][qid].passed) {
+                            isPassed = false;
+                        }
+                    });
+                });
+                this.contexts.forEach(context => {
+                    if (!this.response[context.id]) {
+                        isValid = false;
+                    }
+                    try {
+                        Object.values(this.response[context.id]).forEach(cvalue => {
+                            Object.values(cvalue).forEach(qvalue => {
+                                if (qvalue === null) {
+                                    isValid = false;
+                                }
+                            })
+                        });
+                    } catch (err) {
+                        isValid = false;
+                    }
+                })
+                if (!isValid) {
+                    alert('You have to answer to all questions.');
+                    return;
+                }
+                //if (!isPassed) {
+                    // Failed to pass the validity check.
+                //    window.location.href = '/tasks/done?code=' + encodeURI('pass_no_132v82389a823l3133id112');
+                //    return;
+                //}
+                // Submit with AJAX call.
+                axios.post('/tasks/submit', {
+                    response: this.response,
+                    isPassed: isPassed,
+                    uid: this.uid,
+                    validatorValues: this.validatorValues
+                }).then(response => {
+                    const data = response.data;
+                    const succeed = data.startsWith('done:');
+                    if (succeed) {
+                        const code = data.split(':')[1];
+                        //window.location.href = '/tasks/done?code=' + encodeURI(code);
+                        if (isPassed) {
+                            window.location.href = '/tasks/done?code=' + encodeURI(code);
+                        } else {
+                            window.location.href = '/tasks/done?code=pass_' + encodeURI(code);
+                        }
+                        this.resetValues();
+                    } else {
+                        alert('Error from server on submit: ' + response);
+                    }
+                }).catch(function (error) {
+                    alert('Error occurred on submit: ' + error);
+                });
+            },
+        },
+        watch: {
+            contextIndex() {
+                this.candidateIds = this.shuffle(Object.keys(this.contexts[this.contextIndex].candidates));
+                saveValue('contextIndex', this.contextIndex);
+                this.$nextTick(() => {
+                    document.body.scrollTop = 0; // For Safari
+                    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+                });
+            },
+            response() {
+                saveValue('response', this.response);
+            },
+        }
+    })
+</script>
+{% endblock %}

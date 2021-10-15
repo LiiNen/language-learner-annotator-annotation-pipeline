@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Dialog Annotator</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='base.css') }}" rel="stylesheet">
+    <!-- dev -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script><!-- dev -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> --><!-- prod -->
+    <script src="{{ url_for('static', filename='vue-markdown.js') }}"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+{% block body %}{% endblock %}
+</body>
+</html>

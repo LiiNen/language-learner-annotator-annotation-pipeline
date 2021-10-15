@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block body %}
+<nav class="navbar is-primary" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <div class="navbar-item">
+            Dialog Annotation Study
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <div class="content v-large-padded">
+        <h3>Thank you for your participation!</h3>
+        <p>
+            Your answers has been successfully submitted to the server!<br />
+            Please return to Amazon Mechanical Turk page and enter the code below.
+        </p>
+        <code>{{ code }}</code>
+</div>
+{% endblock %}
