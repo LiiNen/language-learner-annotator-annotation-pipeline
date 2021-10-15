@@ -1,14 +1,34 @@
 [
     {
-        "id": "overall",
-        "text": "How appropriate is the response overall?",
-        "mintext": "Not appropriate at all",
-        "maxtext": "Very appropriate"
+        "task": "machine reading comprehension",
+        "text": "Given the context, write down the answer span",
+        "option": {
+            "answer span": "",
+            "start index": -1
+        }
     },
     {
-        "id": "topic",
-        "text": "How on-topic is the response?",
-        "mintext": "Not on-topic at all",
-        "maxtext": "Very on-topic"
+        "task": "causal commonsense reasoning",
+        "text": "Based on the question type, choose a sentence that meets premise",
+        "option": {
+            "0": "sentence 1",
+            "1": "sentence 2"
+        }
+    },    {
+        "task": "natural language inference",
+        "text": "Based on the premise, determine the hypothesis",
+        "option": {
+            "ent": "entailment",
+            "neu": "neutral",
+            "con": "contradict"
+        }
+    },
+    {
+        "task": "binray sentence similairty",
+        "text": "Determine whether two sentences deliver same meaning",
+        "option": {
+            "0": "different",
+            "1": "similar"
+        }
     }
 ]

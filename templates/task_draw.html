@@ -4,7 +4,7 @@
     <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
             <div class="navbar-item">
-                Dialog Annotation Study
+                Language Learner Annotation - Annotation Pipeline
             </div>
         </div>
         <div class="navbar-menu">
@@ -15,9 +15,12 @@
             </div>
         </div>
     </nav>
+    [[questions]]
+    [[contexts]]
     <div class="container v-large-padded h-padded">
         <div class="content">
             <template v-for="(context, i) of contexts" v-if="i === contextIndex" >
+                [[validateIndexes]]
                 <div class="v-padded validator" v-if="validateIndexes.includes(contextIndex)">
                     <div class="columns">
                         <div class="column is-one-third">
@@ -126,6 +129,7 @@
     saveValue('uid', this.__uid__);
     saveValue('contexts', this.__contexts__);
     saveValue('questions', this.__questions__);
+    saveValue('json_url', this.__json_url__);
     Vue.use(VueMarkdown);
     var app = new Vue({
         el: '#task-view',

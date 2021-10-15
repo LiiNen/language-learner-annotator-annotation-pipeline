@@ -2,6 +2,7 @@ import os
 import json
 import time
 import random
+import requests
 from collections import Counter
 from flask import Flask, redirect, request, render_template
 
@@ -92,6 +93,21 @@ def get_validate_texts():
 
 
 def draw_context_dicts():
+
+    json_url = requests.get('https://sheets.googleapis.com/v4/spreadsheets/1DPQnBmAQtJ0pCYGgD7dSmoN8EUKWU10eGUjPJ76B5TE/values/dataset/?alt=json&key=AIzaSyAQRP6ZxaLICxsOCQowChrdDfghUASYzcs').json()
+    # print(json_url)
+
+    header = json_url['values'][0]
+    
+    questions = json_url['values'][1:]
+    random.shuffle(questions)
+    questions[:min(context_count_per_user, len(questions)) - 1]
+
+    questions = [dict(zip(header, v)) for v in questions]
+    print(questions)
+
+    return questions
+
     context_ids = draw_context_ids()
     return [get_context_dict(cid) for cid in context_ids]
 
