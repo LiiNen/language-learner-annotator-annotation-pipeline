@@ -14,7 +14,8 @@
             "0": "sentence 1",
             "1": "sentence 2"
         }
-    },    {
+    },
+    {
         "task": "natural language inference",
         "text": "Based on the premise, determine the hypothesis",
         "option": {

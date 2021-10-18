@@ -20,6 +20,8 @@ To run development server, run the command below.
 (env)$ FLASK_ENV=development python main.py
 ```
 
+Try http://localhost:5000 on a web browser.
+
 ## How to run in production mode
 
 To run this web app in production mode, run the command below.
@@ -27,31 +29,26 @@ To run this web app in production mode, run the command below.
 (env)$ sh run.sh
 ```
 
-Try http://localhost:5000 on a web browser.
+Try http://localhost:5000 or https://rum.uilab.kr:5000 on a web browser.
 
 ## Prepare the source data
 
-### Contexts
+### Sentence
 
-Dialog *contexts* must be prepared in `./data/contexts`. 
-Each file represents one context, and should have a filename in a form `{context_id}.json`. Context ID can be any string that does not include `__` as a substring. 
-A JSON object in a context file includes one dialog and multiple candidates to put at the end of the dialog. The dialog and all candidates should be in markdown format. Here is an example of a context JSON object.
+Provide dataset at [Google Spreadsheet](https://docs.google.com/spreadsheets/d/1DPQnBmAQtJ0pCYGgD7dSmoN8EUKWU10eGUjPJ76B5TE/edit?usp=sharing) with a `json` format.
 
 ```json
 {
-    "dialog": "**A**: \"When will Daddy come home?\"\n**B**: \"Soon, baby.\"\n**A**: \"But, he said he would be home for dinner,\"",
-    "candidates": {
-        "tfidf": "**B**: \"That is correct.\"",
-        "hred": "**B**: \"You think so, too?\"",
-        "vhcr": "**B**: \"You have to understand, dear.\"",
-        "human": "**B**: \"Daddy will be here in an hour. You wanna wait?\""
-    }
+    "premise": "Kucing itu mengejar burung.", 
+    "sentence1": "Burung itu terbang.", 
+    "sentence2": "Burung itu menangkap seekor cacing.", 
+    "question": "effect"
 }
 ```
 
 ### Questions
 
-Questions for each *context* should be prepared in `./data/questions.json`. 
+Questions for each *task* should be prepared in `./data/questions.json`. 
 The JSON object should be an array that has many quetion objects. 
 A question object should have `id`, `text`, `mintext`, and `maxtext`.
 Here is an example of a questions JSON array.
@@ -59,16 +56,21 @@ Here is an example of a questions JSON array.
 ```json
 [
     {
-        "id": "overall",
-        "text": "How appropriate is the response overall?",
-        "mintext": "Not appropriate at all",
-        "maxtext": "Very appropriate"
+        "task": "natural language inference",
+        "text": "Based on the premise, determine the hypothesis",
+        "option": {
+            "ent": "entailment",
+            "neu": "neutral",
+            "con": "contradict"
+        }
     },
     {
-        "id": "topic",
-        "text": "How on-topic is the response?",
-        "mintext": "Not on-topic at all",
-        "maxtext": "Very on-topic"
+        "task": "binary sentence similarity",
+        "text": "Determine whether two sentences deliver same meaning",
+        "option": {
+            "0": "different",
+            "1": "similar"
+        }
     }
 ]
 ```
@@ -77,18 +79,18 @@ Here is an example of a questions JSON array.
 
 Participants who submitted the answer will get a code that looks like: 
 
-`under_slack_talk_{user_id_with_16_digits_and_letters}`
+`done_{user_id_with_16_digits_and_letters}`
 
 The results are saved in `./output/response/{context_id}__res__{user_id}.json`. 
 
-**NOTE**
+<!-- **NOTE**
 
 There may be participants who got the code `pass_no_132v82389a823l3133id112`. 
-These participants have not passed the validity check and answered wrong to one or more validity check questions.
+These participants have not passed the validity check and answered wrong to one or more validity check questions. -->
 
 ## Configs
 
-Modify the value of a global variable `context_count_per_user` in `./main.py` if you need to.
+Modify the value of a global variable `context_count_per_user` and `user_count_per_context` in `./main.py` if you need to.
 
 
 
