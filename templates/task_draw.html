@@ -112,6 +112,17 @@
                                         [[JSON.parse(context.sentence).question]]
                                     </p>
                                 </div>
+                                <hr/>
+                                <button v-if="isHidden" v-on:click="isHidden = !isHidden" class="button">Hide English translations</button>
+                                <button v-else v-on:click="isHidden = !isHidden" class="button">Show English Translations</button>
+                                <div v-if="isHidden">
+                                    <div v-for="(value, key) of JSON.parse(context.sentence_trans)">
+                                        <p>
+                                            <b>[[key]]</b>
+                                            [[value]]
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                             <div class="column">
                                 <h4>Question</h4>
@@ -134,6 +145,17 @@
                                         <b>[[key]]</b>
                                         [[value]]
                                     </p>
+                                </div>
+                                <hr/>
+                                <button v-if="isHidden" v-on:click="isHidden = !isHidden" class="button">Hide English translations</button>
+                                <button v-else v-on:click="isHidden = !isHidden" class="button">Show English Translations</button>
+                                <div v-if="isHidden">
+                                    <div v-for="(value, key) of JSON.parse(context.sentence_trans)">
+                                        <p>
+                                            <b>[[key]]</b>
+                                            [[value]]
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                             <div class="column">
@@ -212,7 +234,9 @@
             // validateIndexes: [],
             // validatorValues: {},
             validateIndex: -1,
-            validatorValue: -1
+            validatorValue: -1,
+            isHiddens: [],
+            isHidden: false
         },
         created() {
             // this.candidateIds = this.shuffle(Object.keys(this.contexts[this.contextIndex].candidates));
@@ -230,6 +254,9 @@
             // });
             this.validateIndex = Math.floor(Math.random() * 5);
             this.validatorValue = Math.floor(Math.random());
+            console.log(this.contexts.length);
+            console.log(Array(this.contexts.length).fill(false));
+            this.isHiddens = Array(this.contexts.length).fill(false);
         },
         mounted() {
             document.addEventListener('mouseup', event => {
