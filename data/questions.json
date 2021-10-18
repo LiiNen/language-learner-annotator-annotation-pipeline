@@ -1,14 +1,14 @@
 [
     {
         "task": "machine reading comprehension",
-        "text": "Given the context, write down the answer span",
+        "text": "Drag the answer span in context",
         "option": {
-            "answer span": "",
-            "start index": -1
+            "answerspan": "",
+            "answerstart": -1
         }
     },
     {
-        "task": "causal commonsense reasoning",
+        "task": "commonsense causal reasoning",
         "text": "Based on the question type, choose a sentence that meets premise",
         "option": {
             "0": "sentence 1",
@@ -24,7 +24,7 @@
         }
     },
     {
-        "task": "binray sentence similairty",
+        "task": "binary sentence similarity",
         "text": "Determine whether two sentences deliver same meaning",
         "option": {
             "0": "different",

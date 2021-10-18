@@ -11,7 +11,7 @@ data_path = './data'
 output_path = './output'
 context_count_per_user = 10
 user_count_per_context = 3
-secret_code = 'under_slack_talk_'
+secret_code = 'done_'
 
 
 def init_paths():
@@ -95,7 +95,6 @@ def get_validate_texts():
 def draw_context_dicts():
 
     json_url = requests.get('https://sheets.googleapis.com/v4/spreadsheets/1DPQnBmAQtJ0pCYGgD7dSmoN8EUKWU10eGUjPJ76B5TE/values/dataset/?alt=json&key=AIzaSyAQRP6ZxaLICxsOCQowChrdDfghUASYzcs').json()
-    # print(json_url)
 
     header = json_url['values'][0]
     
@@ -104,7 +103,6 @@ def draw_context_dicts():
     questions[:min(context_count_per_user, len(questions)) - 1]
 
     questions = [dict(zip(header, v)) for v in questions]
-    print(questions)
 
     return questions
 
@@ -162,7 +160,7 @@ def task_submit():
     response = data['response']
     user_id = data['uid']
     isPassed = data['isPassed']
-    validatorValues = data['validatorValues']
+    # validatorValues = data['validatorValues']
 
     if isPassed:
         res_output_path = output_path + "/response/"
