@@ -5,6 +5,7 @@ import random
 import requests
 from collections import Counter
 from flask import Flask, redirect, request, render_template
+from ast import literal_eval
 
 app = Flask(__name__)
 data_path = './data'
@@ -81,8 +82,16 @@ def get_context_dict(context_id):
 
 
 def get_questions():
-    with open('%s/questions.json' % data_path, 'r') as f:
-        questions = json.load(f)
+    # with open('%s/questions.json' % data_path, 'r') as f:
+    #     questions = json.load(f)
+    json_url = requests.get('https://sheets.googleapis.com/v4/spreadsheets/1DPQnBmAQtJ0pCYGgD7dSmoN8EUKWU10eGUjPJ76B5TE/values/question/?alt=json&key=AIzaSyAQRP6ZxaLICxsOCQowChrdDfghUASYzcs').json()['values']
+    print(json_url)
+    header = json_url[0]
+    questions = [dict(zip(header, v)) for v in json_url[1:]]
+    print(questions)
+    for i in range(len(questions)):
+        questions[i]['option'] = literal_eval(questions[i]['option'])
+    print(questions)
     return questions
 
 
@@ -94,11 +103,11 @@ def get_validate_texts():
 
 def draw_context_dicts():
 
-    json_url = requests.get('https://sheets.googleapis.com/v4/spreadsheets/1DPQnBmAQtJ0pCYGgD7dSmoN8EUKWU10eGUjPJ76B5TE/values/dataset/?alt=json&key=AIzaSyAQRP6ZxaLICxsOCQowChrdDfghUASYzcs').json()
+    json_url = requests.get('https://sheets.googleapis.com/v4/spreadsheets/1DPQnBmAQtJ0pCYGgD7dSmoN8EUKWU10eGUjPJ76B5TE/values/dataset/?alt=json&key=AIzaSyAQRP6ZxaLICxsOCQowChrdDfghUASYzcs').json()['values']
 
-    header = json_url['values'][0]
+    header = json_url[0]
     
-    questions = json_url['values'][1:]
+    questions = json_url[1:]
     random.shuffle(questions)
     questions[:min(context_count_per_user, len(questions)) - 1]
 
