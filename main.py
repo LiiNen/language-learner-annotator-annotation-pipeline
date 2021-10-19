@@ -85,13 +85,10 @@ def get_questions():
     # with open('%s/questions.json' % data_path, 'r') as f:
     #     questions = json.load(f)
     json_url = requests.get('https://sheets.googleapis.com/v4/spreadsheets/1DPQnBmAQtJ0pCYGgD7dSmoN8EUKWU10eGUjPJ76B5TE/values/question/?alt=json&key=AIzaSyAQRP6ZxaLICxsOCQowChrdDfghUASYzcs').json()['values']
-    print(json_url)
     header = json_url[0]
     questions = [dict(zip(header, v)) for v in json_url[1:]]
-    print(questions)
     for i in range(len(questions)):
         questions[i]['option'] = literal_eval(questions[i]['option'])
-    print(questions)
     return questions
 
 
