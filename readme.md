@@ -1,4 +1,4 @@
-# Dialog Annotator Web
+# Language Learner Annotator Web
 
 This is a project to let MTurkers evaluate the dialogs. 
 

@@ -414,7 +414,7 @@
         },
         watch: {
             contextIndex() {
-                this.candidateIds = this.shuffle(Object.keys(this.contexts[this.contextIndex].candidates));
+                // this.candidateIds = this.shuffle(Object.keys(this.contexts[this.contextIndex].candidates));
                 saveValue('contextIndex', this.contextIndex);
                 this.$nextTick(() => {
                     document.body.scrollTop = 0; // For Safari
