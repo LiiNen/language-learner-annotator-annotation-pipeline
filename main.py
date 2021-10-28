@@ -106,14 +106,14 @@ def draw_context_dicts():
     
     questions = json_url[1:]
     random.shuffle(questions)
-    questions[:min(context_count_per_user, len(questions)) - 1]
+    questions = questions[:min(context_count_per_user, len(questions))]
 
     questions = [dict(zip(header, v)) for v in questions]
 
     return questions
 
-    context_ids = draw_context_ids()
-    return [get_context_dict(cid) for cid in context_ids]
+    # context_ids = draw_context_ids()
+    # return [get_context_dict(cid) for cid in context_ids]
 
 
 def is_user_id(uid):
