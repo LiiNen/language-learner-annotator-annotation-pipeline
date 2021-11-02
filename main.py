@@ -10,7 +10,7 @@ from ast import literal_eval
 app = Flask(__name__)
 data_path = './data'
 output_path = './output'
-context_count_per_user = 3
+context_count_per_user = 5
 user_count_per_context = 3
 secret_code = 'done_'
 
