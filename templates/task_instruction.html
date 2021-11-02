@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block body %}
+<div id="instruction-view">
+    <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <div class="navbar-item">
+                Language Learner Annotation - Annotation Pipeline
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="content v-large-padded">
+            <h4>Annotation Manual</h4>
+            Please read the instruction file carefully. <br />
+            We encourage you to download this instruction file for the following task.
+            <object id="pdf" data="/static/annotation_instruction.pdf" type="application/pdf">
+                <p>
+                    Uh oh, there might be a little problem with loading instruction.
+                    You can <a href="/static/annotation_instruction.pdf">click here to download the PDF file.</a>
+                </p>
+            </object>
+            <hr />
+            <div>
+                <h4>Language / Task Selection</h4>
+                <div>
+                    <div v-for="(option, index) in language_task_set" :key="index">
+                        <input type="checkbox" :id="option" :value="option" v-model="checkedSets">
+                        <label :for="option">[[ option[0] ]] / [[ option[1] ]]</label>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div>
+                <h4>Honor Code</h4>
+                <!-- <form action="/tasks/draw" method="GET" onsubmit="return isBlank(); return false;" name="form">
+                    If you agree to participate in this study, please enter your  
+                    <input 
+                        v-model="workerId"
+                        v-autowidth="{maxWidth: '960px', minWidth: '20px', comfortZone: 0}"
+                        placeholder="NAME"
+                        name="workerId"
+                    />
+                    as honor code. <br />
+                    <p></p>
+                    <input type="submit" value="Start" class="button is-success" @click="submit"/>
+                </form> -->
+                <div>
+                    If you agree to participate in this study, please enter your  
+                    <input 
+                        v-model="workerId"
+                        v-autowidth="{maxWidth: '960px', minWidth: '20px', comfortZone: 0}"
+                        placeholder="NAME"
+                        name="workerId"
+                    />
+                    as honor code. <br />
+                </div>
+                <button class="button is-success" @click="submit">
+                <!-- <button class="button is-success" id="start"> -->
+                    Start
+                </button>
+            </div>
+        </div>
+        <!-- <div class="content v-padded">
+            <div class="buttons">
+                <a href="/tasks/draw" class="button is-success" @click="start">Start</a>
+            </div>
+        </div> -->
+    </div>    
+</div>
+<style>
+    #pdf{
+        width: 100%;
+        height: 100vh;
+    }
+</style>
+<script>
+    // function isBlank() {
+    //     wid = document.forms["form"]["workerId"].value;
+    //     if (wid === "") {
+    //         alert('You have to write down your worker ID.');
+    //         return false;
+    //     }
+    // }
+    this.__language_task_set__ = {{ language_task_set | tojson | safe}};
+    Vue.use(VueMarkdown);
+    var app = new Vue({
+        el: '#instruction-view',
+        delimiters: ['[[', ']]'],
+        data: {
+            language_task_set: this.__language_task_set__,
+            // language_task_set: language_task_set,
+            workerId: '',
+            checkedSets: [],
+        },
+        methods: {
+            submit() {
+                if (this.workerId === '') {
+                    alert('You have to write down your worker Id.')
+                    return;
+                }
+                // window.location.href = 'tasks/draw?workerId=' + encodeURI(this.workerId) + '?sets=' + encodeURI(this.checkedSets);
+                axios.post('/tasks/draw', {
+                    language_task_set: this.checkedSets,
+                    workerId: this.workerId
+                }).then(function(response) {
+                    console.log(response);
+                    alert('done');
+                }).catch(function (error) {
+                    alert('Error occurred on draw: ' + error);
+                    console.log(error);
+                });
+            },
+        }
+    })
+    // $(document).ready(function(){
+    //     $('#start').click(function(){
+    //         $.post('draw', {
+    //             'workerId': this.workerId,
+    //             'language_task_set': this.checkedSets
+    //         })
+    //     })
+    // });
+</script>
+{% endblock %}

@@ -105,7 +105,7 @@
                                 <div>
                                     <p>
                                         <b>context</b>
-                                        <div id="mrc" ref="target" @select="selectAnswerspan" disabled>[[JSON.parse(context.sentence).context]]</div>
+                                        <div id="mrc" ref="target" @select="selectAnswerspan" disabled style="border:1px;">[[JSON.parse(context.sentence).context]]</div>
                                     </p>
                                     <p>
                                         <b>question</b>
@@ -167,7 +167,7 @@
                                         :class="{ 'is-black': isValue(v) }"
                                         @click="selectValue(v)">
                                         [[ question.option[v+''] ]]
-                                    </button>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -216,6 +216,7 @@
     this.__contexts__ = loadValue('contexts') || {{ contexts | tojson | safe }};
     this.__questions__ = loadValue('questions') || {{ questions | tojson | safe }};
     this.__validate_texts__ = {{ validate_texts | tojson | safe }};
+    this.__workerId__ = loadValue('workerId') || '{{workerId}}'
     saveValue('uid', this.__uid__);
     saveValue('contexts', this.__contexts__);
     saveValue('questions', this.__questions__);
@@ -227,6 +228,7 @@
             uid: this.__uid__,
             contexts: this.__contexts__,
             questions: this.__questions__,
+            workerId: this.__workerId__,
             // validateTexts: this.__validate_texts__,
             contextIndex: loadValue('contextIndex') || 0,
             response: loadValue('response') || {},
@@ -236,7 +238,8 @@
             validateIndex: -1,
             validatorValue: -1,
             isHiddens: [],
-            isHidden: false
+            isHidden: false,
+            start_time: Date.now(),
         },
         created() {
             // this.candidateIds = this.shuffle(Object.keys(this.contexts[this.contextIndex].candidates));
@@ -391,6 +394,9 @@
                     response: this.response,
                     isPassed: isPassed,
                     uid: this.uid,
+                    workerId: this.workerId,
+                    start_time: this.start_time,
+                    end_time: Date.now()
                     // validatorValues: this.validatorValues
                 }).then(response => {
                     const data = response.data;
