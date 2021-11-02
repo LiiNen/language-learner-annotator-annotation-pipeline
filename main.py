@@ -161,17 +161,17 @@ def get_language_task_set():
 
 @app.route('/')
 def index():
-    return redirect('/tasks')
+    return render_template('task_index.html')
+
 
 @app.route('/tasks')
 def task_index():
-    return render_template('task_index.html')
-
-@app.route('/tasks/instruction')
-def task_instruction():
-    language_task_set = get_language_task_set()
+    language_task_set = sorted(get_language_task_set())
+    print(language_task_set)
     return render_template('task_instruction.html',
         language_task_set=language_task_set)
+    return render_template('task_index.html')
+
 
 @app.route('/tasks/draw', methods=['POST'])
 def task_draw():
@@ -184,8 +184,12 @@ def task_draw():
     context_dicts = draw_context_dicts(language_task_set)
     questions = get_questions()
     validate_texts = get_validate_texts()
-    redirect('/tasks') if workerId and language_task_set else ''
+    # redirect('/tasks') if workerId and language_task_set else ''
     print('context_dicts:', context_dicts)
+    print('questions:', questions)
+    print('validate_texts:', validate_texts)
+    print('uid:', uid)
+    print('workerId:', workerId)
     return render_template('task_draw.html',
         uid=uid,
         contexts=context_dicts,

@@ -81,7 +81,7 @@ Participants who submitted the answer will get a code that looks like:
 
 `done_{user_id_with_16_digits_and_letters}`
 
-The results are saved in `./output/response/{context_id}__res__{user_id}.json`. 
+The results are saved in `./output/response/{context_id}__res__{user_id}__{worker_id}.json`. 
 
 <!-- **NOTE**
 
