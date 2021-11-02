@@ -118,15 +118,10 @@
                     language_task_set: this.checkedSets,
                     workerId: this.workerId
                 }).then(function(response) {
-                    console.log(response);
                     document.write(response.data);
-                    // console.log(response.data);
+                    // location.href = '/tasks/draw';
+                    console.log(response);
                     // alert('done');
-                    // self.$router.push('/tasks/draw');
-                    // console.log(response.config.url);
-                    // window.location = response.config.url.redirect;
-                    // window.location.href = '/tasks/draw';
-                    // window.location.href = '/tasks/draw?workerId=' + encodeURI(this.workerId) + '?sets=' + encodeURI(this.checkedSets);
                 }).catch(function (error) {
                     alert('Error occurred on draw: ' + error);
                     console.log(error);
