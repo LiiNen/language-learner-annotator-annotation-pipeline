@@ -12,12 +12,26 @@ $ source ./env/bin/activate
 (env)$ pip install -r requirements.txt
 ```
 
+for windows
+```bash
+$ python -m venv ./env
+$ env\Scripts\activate.bat
+(env)$ pip install -r requirements.txt
+```
+
 ## How to develop
 
 To run development server, run the command below.
 
 ```bash
 (env)$ FLASK_ENV=development python main.py
+```
+
+for windows
+```bash
+(env)$ set FLASK_ENV=development
+(env)$ $env:FLASK_APP = "main"
+(env)$ flask run
 ```
 
 Try http://localhost:5000 on a web browser.
