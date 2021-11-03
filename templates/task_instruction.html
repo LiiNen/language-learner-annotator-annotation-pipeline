@@ -15,9 +15,11 @@
                 Please read the instruction file carefully. <br />
                 We encourage you to download this instruction file for the following task.
                 <div>
-                    <object id="pdf" data="/static/annotation_instruction.pdf" type="application/pdf">
+                    <div id="adobe-dc-view" id="pdf"></div>
+                    <!-- <object id="pdf" data="/static/annotation_instruction.pdf" type="application/pdf">
                         <embed src="/static/annotation_instruction.pdf" type="application/pdf"/>
-                    </object>
+                    </object> -->
+                    <!-- <embed src="/static/annotation_instruction.pdf" type="application/pdf"> -->
                     <!-- <iframe id="pdf" data="/static/annotation_instruction.pdf">
                         <p>
                             Uh oh, there might be a little problem with loading instruction.
@@ -71,6 +73,17 @@
     }
 </style>
 <script>
+    document.addEventListener("adobe_dc_view_sdk.ready", function(){
+        var adobeDCView = new AdobeDC.View({clientId: "37799426f76141c5a801c3af644b96c0", divId: "adobe-dc-view"});
+        adobeDCView.previewFile({
+        content:{ location: 
+            { url: "/static/annotation_instruction.pdf"}},
+        metaData:{fileName: "Bodea Brochure.pdf"}
+        },
+        {
+        embedMode: "SIZED_CONTAINER"
+        });
+    });
     this.__language_task_set__ = {{ language_task_set | tojson | safe}};
     Vue.use(VueMarkdown);
     var app = new Vue({
