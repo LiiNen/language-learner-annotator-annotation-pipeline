@@ -39,7 +39,7 @@
                 <div>
                     <div v-for="(option, index) in language_task_set" :key="index">
                         <input type="checkbox" :id="option" :value="option" v-model="checkedSets">
-                        <label :for="option">[[ option[0] ]] / [[ option[1] ]]</label>
+                        <label :for="option" class="checkbox">[[ option[0] ]] / [[ option[1] ]]</label>
                     </div>
                 </div>
             </div>
@@ -56,8 +56,9 @@
                     />
                     as honor code. <br />
                 </div>
+                <br />
                 <button class="button is-success" @click="submit">
-                    Start
+                    Continue
                 </button>
             </div>
         </div>
@@ -95,7 +96,6 @@
                     workerId: this.workerId
                 }).then(function(response) {
                     document.write(response.data);
-                    console.log(response);
                 }).catch(function (error) {
                     alert('Error occurred on draw: ' + error);
                     console.log(error);

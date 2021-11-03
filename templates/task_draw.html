@@ -113,9 +113,9 @@
                                     </p>
                                 </div>
                                 <hr/>
-                                <button v-if="isHidden" v-on:click="isHidden = !isHidden" class="button">Hide English translations</button>
-                                <button v-else v-on:click="isHidden = !isHidden" class="button">Show English Translations</button>
-                                <div v-if="isHidden">
+                                <button v-if="isHiddens[context.id] % 2" @click="updateTranslations(context.id)" class="button">Hide English translations</button>
+                                <button v-else @click="updateTranslations(context.id)" class="button">Show English Translations</button>
+                                <div v-if="isHiddens[context.id] % 2">
                                     <div v-for="(value, key) of JSON.parse(context.sentence_trans)">
                                         <p>
                                             <b>[[key]]</b>
@@ -147,9 +147,9 @@
                                     </p>
                                 </div>
                                 <hr/>
-                                <button v-if="isHidden" v-on:click="isHidden = !isHidden" class="button">Hide English translations</button>
-                                <button v-else v-on:click="isHidden = !isHidden" class="button">Show English Translations</button>
-                                <div v-if="isHidden">
+                                <button v-if="isHiddens[context.id] % 2" v-on:click="updateTranslations(context.id)" class="button">Hide English translations</button>
+                                <button v-else v-on:click="updateTranslations(context.id)" class="button">Show English Translations</button>
+                                <div v-if="isHiddens[context.id] % 2">
                                     <div v-for="(value, key) of JSON.parse(context.sentence_trans)">
                                         <p>
                                             <b>[[key]]</b>
@@ -237,8 +237,7 @@
             // validatorValues: {},
             validateIndex: -1,
             validatorValue: -1,
-            isHiddens: [],
-            isHidden: false,
+            isHiddens: {},
             start_time: Date.now(),
         },
         created() {
@@ -257,9 +256,16 @@
             // });
             this.validateIndex = Math.floor(Math.random() * 5);
             this.validatorValue = Math.floor(Math.random());
-            console.log(this.contexts.length);
-            console.log(Array(this.contexts.length).fill(false));
-            this.isHiddens = Array(this.contexts.length).fill(false);
+            // this.isHiddens = Array(this.contexts.length).fill(0);
+            // this.isHiddens = Array(this.contexts.length).fill(0).slice();
+            this.contexts.forEach(c => {
+                // console.log(c);
+                // console.log(c.id);
+                // console.log(this.isHiddens);
+                Vue.set(this.isHiddens, c.id, 0);
+            })
+            console.log(this.isHiddens);
+            console.log(app.isHiddens);
         },
         mounted() {
             document.addEventListener('mouseup', event => {
@@ -268,8 +274,26 @@
             // if (event.contains(this.mrc))
                 this.selectAnswerspan();
             });
+            // console.log(document.getElementById('mrc'))
+            // document.getElementById("mrc").addEventListener("selectionchange", event => {
+            //     console.log('selectionchange');
+            //     console.log(event);
+            //     // if (event.target === document.getElementById("mrc" || event.target.contains(document.getElementById("mrc")))){
+            //         // console.log('event yes');
+            //         // this.selectAnswerspan();
+            //     // }
+            //     this.selectAnswerspan();
+            // })
         },
         methods: {
+            updateTranslations(index) {
+                console.log(app.isHiddens);
+                // console.log(index);
+                // console.log(app.isHiddens[index]);
+                Vue.set(this.isHiddens, index, this.isHiddens[index] + 1);
+                console.log(app.isHiddens);
+                console.log(this.isHiddens);
+            },
             shuffle(array) {
                 let currentIndex = array.length, temporaryValue, randomIndex;
                 while(0 !== currentIndex) {
@@ -390,13 +414,15 @@
                 // //}
                 // // Submit with AJAX call.
                 isPassed = true;
+                console.log(this.isHiddens);
                 axios.post('/tasks/submit', {
                     response: this.response,
                     isPassed: isPassed,
                     uid: this.uid,
                     workerId: this.workerId,
                     start_time: this.start_time,
-                    end_time: Date.now()
+                    end_time: Date.now(),
+                    translation: this.isHiddens
                     // validatorValues: this.validatorValues
                 }).then(response => {
                     const data = response.data;
@@ -430,6 +456,13 @@
             response() {
                 saveValue('response', this.response);
             },
+            isHiddens() {
+                saveValue('isHiddens', this.isHiddens);
+                this.$nextTick(() => {
+                    document.body.scrollTop = 0; // For Safari
+                    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+                });
+            }
         }
     })
 </script>

@@ -9,7 +9,8 @@ from ast import literal_eval
 
 app = Flask(__name__)
 data_path = './data'
-output_path = './output'
+# output_path = './output'
+output_path = '/mnt/nas2/haneul/language_learner_annotation/annotation-output'
 context_count_per_user = 5
 user_count_per_context = 3
 secret_code = 'done_'
@@ -134,7 +135,7 @@ def generate_user_id():
     return uid
 
 
-def save_response(res_output_path, context_id, user_id, response, isPassed, workerId, start_time, end_time):
+def save_response(res_output_path, context_id, user_id, response, isPassed, workerId, start_time, end_time, translation):
     if isPassed:
         file_path = '%s/%s__res__%s__%s.json' % (res_output_path, context_id, user_id, workerId)
     else:
@@ -145,11 +146,12 @@ def save_response(res_output_path, context_id, user_id, response, isPassed, work
         'response': response,
         'worker_id': workerId,
         'start_time': start_time,
-        'end_time': end_time
+        'end_time': end_time,
+        'translation': translation
     }
     with open(file_path, 'w') as f:
         # f.write(json.dumps(response))
-        f.write(json.dumps(data, ensure_ascii=False))
+        f.write(json.dumps(data, ensure_ascii=False, indent=4))
 
 
 def get_language_task_set():
@@ -198,8 +200,9 @@ def task_submit():
     workerId = data['workerId']
     start_time = data['start_time']
     end_time = data['end_time']
+    translation = data['translation']
     # validatorValues = data['validatorValues']
-
+    print(translation)
     if isPassed:
         res_output_path = output_path + "/response/"
     else:
@@ -207,7 +210,7 @@ def task_submit():
         save_response(res_output_path, "attention", user_id, validatorValues, isPassed)
 
     for context_id, value in response.items():
-        save_response(res_output_path, context_id, user_id, value, isPassed, workerId, start_time, end_time)
+        save_response(res_output_path, context_id, user_id, value, isPassed, workerId, start_time, end_time, translation[context_id])
 
     return 'done:%s' % (secret_code + user_id)
 
