@@ -268,12 +268,19 @@
             console.log(app.isHiddens);
         },
         mounted() {
-            document.addEventListener('mouseup', event => {
-            // if (event.target === this.$refs.target || event.target.contains(this.$refs.target))
-            if (event.target === document.getElementById('mrc' || event.target.contains(document.getElementById('mrc'))))
-            // if (event.contains(this.mrc))
-                this.selectAnswerspan();
+            ['mouseup', 'touchend'].forEach(event => {
+                document.addEventListener(event, event => {
+                    console.log(event);
+                    if (event.target === document.getElementById('mrc' || event.target.contains(document.getElementById('mrc'))))
+                        this.selectAnswerspan();
+                })
             });
+            // document.addEventListener('mouseup', event => {
+            // // if (event.target === this.$refs.target || event.target.contains(this.$refs.target))
+            // if (event.target === document.getElementById('mrc' || event.target.contains(document.getElementById('mrc'))))
+            // // if (event.contains(this.mrc))
+            //     this.selectAnswerspan();
+            // });
             // console.log(document.getElementById('mrc'))
             // document.getElementById("mrc").addEventListener("selectionchange", event => {
             //     console.log('selectionchange');
