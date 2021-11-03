@@ -14,26 +14,10 @@
                 <h4>Annotation Manual</h4>
                 Please read the instruction file carefully. <br />
                 We encourage you to download this instruction file for the following task.
-                <div>
+                <iframe id="pdf" src="https://docs.google.com/document/d/e/2PACX-1vQoofTf217iF6UogXzJrJhVbOGA8QPz2vefgSmwy41bYGHr75IcAzEPDwTPpIvF0NTPbjbZ11JNAEY7/pub?embedded=true"></iframe>
+                <!-- <div>
                     <div id="adobe-dc-view" id="pdf"></div>
-                    <!-- <object id="pdf" data="/static/annotation_instruction.pdf" type="application/pdf">
-                        <embed src="/static/annotation_instruction.pdf" type="application/pdf"/>
-                    </object> -->
-                    <!-- <embed src="/static/annotation_instruction.pdf" type="application/pdf"> -->
-                    <!-- <iframe id="pdf" data="/static/annotation_instruction.pdf">
-                        <p>
-                            Uh oh, there might be a little problem with loading instruction.
-                            You can <a href="/static/annotation_instruction.pdf">click here to download the PDF file.</a>
-                        </p>
-                    </iframe> -->
-                </div>
-                <!-- <object id="pdf" data="/static/annotation_instruction.pdf" type="application/pdf">
-                    <p>
-                        Uh oh, there might be a little problem with loading instruction.
-                        You can <a href="/static/annotation_instruction.pdf">click here to download the PDF file.</a>
-                    </p>
-                </object> -->
-                <!-- <embed id="pdf" src="/static/annotation_instruction.pdf" type="application/pdf"></embed> -->
+                </div> -->
             </div>
             <hr />
             <div>
@@ -73,17 +57,17 @@
     }
 </style>
 <script>
-    document.addEventListener("adobe_dc_view_sdk.ready", function(){
-        var adobeDCView = new AdobeDC.View({clientId: "37799426f76141c5a801c3af644b96c0", divId: "adobe-dc-view"});
-        adobeDCView.previewFile({
-        content:{ location: 
-            { url: "/static/annotation_instruction.pdf"}},
-        metaData:{fileName: "annotation_instruction.pdf"}
-        },
-        {
-        embedMode: "IN_LINE"
-        });
-    });
+    // document.addEventListener("adobe_dc_view_sdk.ready", function(){
+    //     var adobeDCView = new AdobeDC.View({clientId: "37799426f76141c5a801c3af644b96c0", divId: "adobe-dc-view"});
+    //     adobeDCView.previewFile({
+    //     content:{ location: 
+    //         { url: "/static/annotation_instruction.pdf"}},
+    //     metaData:{fileName: "annotation_instruction.pdf"}
+    //     },
+    //     {
+    //     embedMode: "IN_LINE"
+    //     });
+    // });
     this.__language_task_set__ = {{ language_task_set | tojson | safe}};
     Vue.use(VueMarkdown);
     var app = new Vue({
