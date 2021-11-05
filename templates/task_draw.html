@@ -423,6 +423,7 @@
                 isPassed = true;
                 console.log(this.isHiddens);
                 axios.post('/tasks/submit', {
+                    context: this.contexts,
                     response: this.response,
                     isPassed: isPassed,
                     uid: this.uid,

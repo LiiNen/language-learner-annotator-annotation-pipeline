@@ -194,6 +194,7 @@ def task_draw():
 @app.route('/tasks/submit', methods=['POST'])
 def task_submit():
     data = json.loads(request.data)
+    context = data['context']
     response = data['response']
     user_id = data['uid']
     isPassed = data['isPassed']
@@ -203,14 +204,17 @@ def task_submit():
     translation = data['translation']
     # validatorValues = data['validatorValues']
     print(translation)
-    if isPassed:
-        res_output_path = output_path + "/response/"
-    else:
-        res_output_path = output_path + "/no_response/"
-        save_response(res_output_path, "attention", user_id, validatorValues, isPassed)
+    # if isPassed:
+    #     res_output_path = output_path + "/response/"
+    # else:
+    #     res_output_path = output_path + "/no_response/"
+    #     save_response(res_output_path, "attention", user_id, validatorValues, isPassed)
 
-    for context_id, value in response.items():
-        save_response(res_output_path, context_id, user_id, value, isPassed, workerId, start_time, end_time, translation[context_id])
+    # for context_id, value in response.items():
+    for context_dict in context:
+        r = response[context_dict['id']] if context_dict['id'] in response else None
+        res_output_path = output_path + "/response/" if r else output_path + "/no_response/"
+        save_response(res_output_path, context_dict['id'], user_id, r, isPassed, workerId, start_time, end_time, translation[context_dict['id']])
 
     return 'done:%s' % (secret_code + user_id)
 

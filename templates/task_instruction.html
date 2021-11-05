@@ -43,7 +43,7 @@
                     as honor code. <br />
                 </div>
                 <br />
-                <button class="button is-success" @click="submit">
+                <button class="button is-success" @click="submit" :class="{'button':true, 'is-success':true, 'is-loading':buttonClicked}">
                     Continue
                 </button>
             </div>
